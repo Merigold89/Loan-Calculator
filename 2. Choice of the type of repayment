@@ -1,0 +1,58 @@
+import math
+
+
+class LoanCalculator:
+
+    def __init__(self):
+        self.last_installment = 0
+        self.loan_principal = LoanCalculator.loan_principal()
+        LoanCalculator.menu(self)
+        LoanCalculator.__str__(self)
+
+    def __str__(self):
+        if self.choose == 'm':
+            if self.number_of_months == 1:
+                print(f'It will take {int(self.number_of_months)} month to repay the loan')
+            else:
+                print(f'It will take {int(self.number_of_months)} months to repay the loan')
+        if self.choose == 'p':
+            if self.last_installment > 0:
+                print(f'Your monthly payment = {int(self.installment)} and the last payment = {self.last_installment}')
+            else:
+                print(f'Your monthly payment = {int(self.installment)}')
+
+
+
+    def menu(self):
+        print('What do you want to calculate?\ntype "m" - for number of monthly payments,\n'
+              'type "p" - for the monthly payment:')
+        self.choose = input(str())
+        if self.choose == 'm':
+            LoanCalculator.n_monthly_payment(self)
+        elif self.choose == 'p':
+            LoanCalculator.monthly_payment(self)
+        else:
+            print('No such choice. Repeat selection.')
+            LoanCalculator.menu()
+
+    def loan_principal():
+        print('Enter the loan principal:')
+        return int(input())
+
+    def n_monthly_payment(self):
+        self.proposed_loan_installment = int(input('Enter the monthly payment:\n'))
+        self.number_of_months = math.ceil(self.loan_principal / self.proposed_loan_installment)
+        return self.number_of_months
+
+    def monthly_payment(self):
+        self.proposed_month_n = int(input('Enter the number of months:\n'))
+        self.installment = self.loan_principal % self.proposed_month_n
+        if self.installment == 0:
+            self.installment = self.loan_principal / self.proposed_month_n
+            return self.installment
+        else:
+            self.installment = math.ceil(self.loan_principal / self.proposed_month_n)
+            self.last_installment = self.loan_principal - (self.proposed_month_n - 1) * self.installment
+            return self.last_installment, self.installment
+
+customer = LoanCalculator()
