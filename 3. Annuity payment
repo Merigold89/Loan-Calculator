@@ -1,0 +1,100 @@
+import math
+
+
+class LoanCalculator:
+
+    def __init__(self):
+        self.last_installment = 0
+        self.loan_principal = 0
+        self.choose = 0
+        self.proposed_loan_installment = 0
+        self.interest = 0
+        self.n_of_periods = 0
+        self.annuity_payment = 0
+        self.year = 0
+        LoanCalculator.menu(self)
+        LoanCalculator.__str__(self)
+
+    def __str__(self):
+        if self.choose == 'n':
+            if self.year >= 1:
+                if self.number_of_months == 1:
+                    print(f'It will take {self.year} years and {int(self.number_of_months)} months to repay this loan!')
+                else:
+                    print(f'It will take {self.year} years and {int(self.number_of_months)} months to repay this loan!')
+            else:
+                if self.number_of_months == 1:
+                    print(f'It will take {int(self.number_of_months)} month to repay the loan!')
+                else:
+                    print(f'It will take {int(self.number_of_months)} months to repay the loan!')
+        elif self.choose == 'a':
+                print(f'Your monthly payment = {self.annuity_payment}!')
+        elif self.choose == 'p':
+                print(f'Your loan principal = {int(self.loan_principal)}!')
+
+    def menu(self):
+        print('What do you want to calculate?\ntype "n" - for number of monthly payments,\n'
+              'type "a" for annuity monthly payment amount\n'
+              'type "p" - for the monthly payment:')
+        self.choose = input(str())
+        if self.choose == 'n':
+            LoanCalculator.queries(self)
+            LoanCalculator.interest_rate(self)
+            LoanCalculator.n_of_months(self)
+            LoanCalculator.months_to_years(self)
+        elif self.choose == 'a':
+            LoanCalculator.queries(self)
+            LoanCalculator.interest_rate(self)
+            LoanCalculator.annuity_payment(self)
+        elif self.choose == 'p':
+            LoanCalculator.queries(self)
+            LoanCalculator.interest_rate(self)
+            LoanCalculator.loan_principal_value(self)
+        else:
+            print('No such choice. Repeat selection.\n')
+            LoanCalculator.menu(self)
+
+    def queries(self):
+        if self.choose == 'p':
+            self.annuity_payment = float(input('Enter the annuity payment:\n'))  # A in formula
+        if self.choose == 'n' or self.choose == 'a':
+            self.loan_principal = int(input('Enter the loan principal:\n'))  # P in formula
+        if self.choose == 'a' or self.choose == 'p':
+            self.n_of_periods = int(input('Enter the number of periods:\n'))  # n in formula
+        if self.choose == 'n':
+            self.proposed_loan_installment = float(input('Enter the monthly payment:\n'))
+        if self.choose == 'n' or self.choose == 'a' or self.choose == 'p':
+            self.interest = float(input('Enter the loan interest:\n'))  # i in formula
+        return self.annuity_payment, self.loan_principal, self.n_of_periods, self.proposed_loan_installment, self.interest
+
+    def interest_rate(self):  # calculation of interest - i
+        self.interest_value = float((self.interest/100) / (12 * 1))  # X% and 100%
+        return self.interest_value
+
+    def n_of_months(self):  # calculating the number of payments logarithm - n
+        numeral = float(self.proposed_loan_installment)
+        denominator = float(self.proposed_loan_installment - (self.interest_value * self.loan_principal))
+        log_base = float(1 + self.interest_value)
+        self.number_of_months = math.ceil(math.log((numeral / denominator), log_base))
+        return self.number_of_months
+
+    def months_to_years(self):  # change of months into years
+        if self.number_of_months >= 12:
+            self.year = math.floor(self.number_of_months / 12)
+            self.number_of_months = math.ceil(self.number_of_months % 12)
+        else:
+            self.number_of_months = math.ceil(self.number_of_months % 12)
+        return self.year, self.number_of_months
+
+    def annuity_payment(self):  # calculating the annuity payment - A
+        numeral = float(self.interest_value * ((1 + self.interest_value) ** self.n_of_periods))
+        denominator = float(((1 + self.interest_value) ** self.n_of_periods) - 1)
+        self.annuity_payment = math.ceil(self.loan_principal * (numeral / denominator))
+        return self.annuity_payment
+
+    def loan_principal_value(self):  # calculating the loan principal - P
+        numeral = float(self.interest_value * (1 + self.interest_value) ** self.n_of_periods)
+        denominator = float(((1 + self.interest_value) ** self.n_of_periods) - 1)
+        self.loan_principal = float(self.annuity_payment / (numeral / denominator))
+
+customer = LoanCalculator()
